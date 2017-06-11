@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js" ></script>
+	<title>Xem Phim Cùng DEV</title>
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div id="header">Xem Phim Cùng DEV</div>
+	<div id="main">
+		<div id="left-bar">
+			<div class="title">
+				Đây là Left Bar
+			</div>
+			<ul>
+				<li>Item - 1</li>
+				<li>Item - 2</li>
+				<li>Item - 3</li>
+				<li>Item - 4</li>
+				<li>Item - 5</li>
+			</ul>
+		</div>
+		<div id="content">
+			<div id="watch"></div>
+			<div id="search">
+				<input type="text" name="q" id="q" placeholder="Nhập tên phim để tìm kiếm ... "/>
+				<div id="select">
+					<div class="server" data-sv="phimmoi">Phim Mới</div>
+					<div class="server" data-sv="phimbathu">Phim Bất Hủ</div>
+				</div>
+				<div id="result"></div>
+			</div>
+		</div>
+		<div id="right-bar">
+			<div class="title">
+				Đây là right Bar
+			</div>
+			<ul>
+				<li>Item - 1</li>
+				<li>Item - 2</li>
+				<li>Item - 3</li>
+				<li>Item - 4</li>
+				<li>Item - 5</li>
+			</ul>
+		</div>
+
+
+	</div>
+</body>
+<script>
+
+	$(function(){
+		var module = 'phimmoi';
+		$('.server').click(function(e){
+			$(this).addClass('active').siblings('.active').removeClass('active');
+			module = $(this).data('sv');
+			return search();
+		})
+
+		function search(){
+			var keyword = $('input[name="q"]').val() || false;
+			if(keyword){
+				$.get('/search/'+module+'/'+keyword, function(e){
+					link = '';
+					e.id.forEach(function(ele, ind){
+						link += '<p><a onclick="watch('+ele+');return false;" href="watch/phimbathu/'+ele+'" data-id="' + ele + '">' + e.name[ind] + '</a></p>';
+					});
+					$('#result').html(link);
+				});
+			}
+		}
+
+		function watch(e){
+			var id = e || false;
+			if(id){
+				$.get('/watch/phimbathu/'+id, function(data){
+					data = JSON.parse(JSON.stringify(data));
+					data.url.reverse();
+					data.resulotion.reverse();
+					select = [];
+					data.url.forEach(function(ele, ind){
+						video = '';
+						video += '<h2>'+data.title+ '<br />'+data.resulotion[ind]+'p</h2>';
+						video += '<video controls poster="http://www.arsenal.com/assets/images/player/placeholder_live_video.jpg" preload="none" src="'+ele+'" type="video/mp4">';
+						video += '</video>';
+						select[ind] = '<div onclick="changeVideo(this);" class="item" data-s="'+data.resulotion[ind]+'" data-url="'+ele+'">'+data.resulotion[ind]+'p</div>';
+					})
+					select[10] = '<div class="item def">360p</div>';
+					video = '<div class="video">'+video+'<div class="selectquality">'+select.reverse().join('')+'</div></div>';
+					$('#watch').html(video);
+					$('#watch').show();
+				});
+			}
+			$('html,body').animate({ scrollTop: 0 }, 'slow');
+			return false;
+		}
+
+		function changeVideo(e){
+			video = $('.video video')[0];
+			a = video.currentTime;
+			video.src = e.getAttribute('data-url');
+			$('.def').html(e.getAttribute('data-s'));
+			video.currentTime = a;
+			video.load();
+			video.play();
+		}
+	})
+
+
+</script>
+</html>

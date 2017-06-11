@@ -1,0 +1,36 @@
+<style>
+.c-load{
+border: 10px solid rgba(0, 0, 0, 0.13);
+display: block;
+width: 200px;
+height: 200px;
+margin: auto;
+border-radius: 300px;
+box-sizing: border-box;
+position: relative;
+}
+.c-cut:hover {
+    transform: rotate(360deg);
+}
+.c-cut {
+    position: absolute;
+    width: 180px;
+    height: 180px;
+    border-radius: 300px;
+    z-index: 2;
+    top: -10px;
+    left: -10px;
+    border: 10px solid red;
+    border-bottom: 10px solid transparent;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    transition: all 2s;
+}
+
+.c-cut:after {}
+</style>
+
+<div class="c-load">
+    <div class="c-cut">
+    </div>
+</div>
