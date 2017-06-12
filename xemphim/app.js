@@ -1,28 +1,25 @@
-var bodyParser = require("body-parser");
+// import NODEJS library
 
-// load thư viện nén nội dung gzip
+var bodyparser = require("body-parser");
+
 var compression = require('compression');
 
-// load thư viện express
-var app = require('express')()
-
-// thư viện template
 var pug = require('pug')
 
-// thư viện quản lí file
 var fs = require('fs')
 
 var aes = require('gibberish-aes');
 
-// thư viện crawl nội dung
 var request = require('request')
 
-// tạo server lắng nghe trên cổng 8080
-app.listen(process.env.PORT || 8080)
+var app = require('express')()
 
-// sử dụng compress
+app.listen(process.env.PORT || 9090)
+
 app.use(compression({'level':9}))
 
+
+// routing request
 app.get('/style.css', function(req, res){
     res.sendFile('style.css',{ root : __dirname});
 })
